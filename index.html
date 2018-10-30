@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <title>2D Maze Game</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet">
+       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+        
+        <link rel="stylesheet" href="style.css">
+        <style>
+            body {
+                height: 100%;
+                background-color: #333333;
+                color: #ffffff;
+            }
+        </style>
+  
+</head>
+
+<body>
+
+<div id = 'setting' class = 'mt-5'>
+    <button type="button" class="btn btn-info btn-lg ml-2" id='map3'><i class="fa fa-map" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-light btn-lg ml-2" id='map2'><i class="fa fa-map" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-light btn-lg ml-2" id='map1'><i class="fa fa-map" aria-hidden="true"></i></button>
+    <br>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-light btn-lg" id='lowButton'><i class="material-icons">
+            directions_walk
+        </i></button>
+        <button type="button" class="btn btn-info btn-lg" id='mediumButton'><i class="material-icons">
+            directions_car
+        </i></button>
+        <button type="button" class="btn btn-light btn-lg" id='highButton'><i class="material-icons">
+            flight
+        </i></button>
+    </div>
+  </div>
+  
+
+<div class='wrap' id = 'draggable'>
+  <canvas width=400  height=400 id='canvas'></canvas>
+</div>
+
+<script  src="index.js"></script>
+<script type="text/javascript">
+    var objectActive = null;
+    var intShiftX = 0;
+    var intShiftY = 0;
+    
+    var markX = 0;
+    var markY = 0;
+    var sensitive = 15;
+    
+    jQuery('#lowButton').click(function(){
+        //console.log('low');
+                               sensitive = 25;
+                               jQuery(this)
+                               .removeClass('btn-light')
+                               .addClass('btn-info')
+                               //.siblings().removeClass('btn-info')
+                               .siblings().addClass('btn-light');
+    });
+    jQuery('#mediumButton').click(function(){
+        //console.log('medium');
+                                  sensitive = 15;
+                                  jQuery(this)
+                                  .removeClass('btn-light')
+                                  .addClass('btn-info')
+                                  //.siblings().removeClass('btn-info')
+                                  .siblings().addClass('btn-light');
+    });
+    jQuery('#highButton').click(function(){
+       //console.log('high');
+                                sensitive = 8;
+                                jQuery(this)
+                                .removeClass('btn-light')
+                                .addClass('btn-info')
+                                //.siblings().removeClass('btn-info')
+                                .siblings().addClass('btn-light');
+    });
+                               
+    
+    
+    
+    jQuery(document)
+    .on('touchstart',function(){
+        document.body.style.zoom=0.7;
+        //this.blur();
+        })
+    .on('mousemove', function(objectEvent) {
+        if (objectActive !== null) {
+        jQuery(objectActive)
+        .css({
+             'position': 'absolute',
+             'left': (objectEvent.pageX - intShiftX) + 'px',
+             'top': (objectEvent.pageY - intShiftY) + 'px'
+             });
+        //console.log(objectEvent.pageX, markX, intShiftX);
+        if(markX > objectEvent.pageX+sensitive){
+            move('right');
+            markX = objectEvent.pageX;
+        }
+        else if(sensitive+markX < objectEvent.pageX){
+            move('left');
+            markX = objectEvent.pageX;
+        }
+        else if(markY > objectEvent.pageY+sensitive){
+            move('down')
+            markY = objectEvent.pageY;
+        }
+        else if(sensitive+markY < objectEvent.pageY){
+            move('up')
+            markY = objectEvent.pageY;
+        }
+
+        }
+
+        })
+    .on('mouseup touchend', function(objectEvent) {
+        objectActive = null;
+        });
+
+    jQuery('#draggable')
+        .on('mousedown', function(objectEvent) {
+            if (objectEvent.which === 1) {
+            objectActive = this;
+            intShiftX = objectEvent.pageX - jQuery(this).offset().left;
+            intShiftY = objectEvent.pageY - jQuery(this).offset().top+230;
+            }
+        });
+        
+    jQuery('#draggable')
+        .on('touchstart', function(objectEvent) {
+            if (objectEvent.touches) {
+            objectActive = this;
+            intShiftX = objectEvent.touches[0].pageX - jQuery(this).offset().left;
+            intShiftY = objectEvent.touches[0].pageY - jQuery(this).offset().top+230;
+            }
+            console.log(objectActive);
+            });
+            
+        jQuery(document)
+            .on('touchmove', function(objectEvent) {
+                if (objectActive !== null) {
+                jQuery(objectActive)
+                .css({
+                     'position': 'absolute',
+                     'left': (objectEvent.touches[0].pageX - intShiftX) + 'px',
+                     'top': (objectEvent.touches[0].pageY - intShiftY) + 'px'
+                     });
+                //console.log(objectEvent.pageX, markX, intShiftX);
+                if(markX > objectEvent.touches[0].pageX+sensitive){
+                move('right');
+                markX = objectEvent.touches[0].pageX;
+                }
+                else if(sensitive+markX < objectEvent.touches[0].pageX){
+                move('left');
+                markX = objectEvent.touches[0].pageX;
+                }
+                else if(markY > objectEvent.touches[0].pageY+sensitive){
+                move('down')
+                markY = objectEvent.touches[0].pageY;
+                }
+                else if(sensitive+markY < objectEvent.touches[0].pageY){
+                move('up')
+                markY = objectEvent.touches[0].pageY;
+                }
+                
+                }
+                
+                })
+
+</script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+*{margin:0px;padding:0px}
+div{margin-top:10px;text-align:center}
+.wrap{
+    margin:20px auto;
+    width:400px;
+    margin-top:230px;
+}
+#setting{
+    margin-top:50px;
+}
+input{;margin-bottom:10px}
+#map1{
+    font-size: 100px;
+    line-height: normal;
+}
+#map2{
+    font-size: 50px;
+    line-height: normal;
+}
+#map3{
+    font-size: 20px;
+}
+
